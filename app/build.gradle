@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -116,11 +116,10 @@ dependencies {
     androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexMakerVersion"
     androidTestImplementation('org.koin:koin-test:2.0.1') { exclude group: 'org.mockito' }
 
-
+    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
 
     //Maps & Geofencing
     implementation "com.google.android.gms:play-services-location:$playServicesVersion"
     implementation "com.google.android.gms:play-services-maps:$playServicesVersion"
-
-
 }
+apply plugin: 'com.google.gms.google-services'
