@@ -42,4 +42,5 @@
     <string name="error_adding_geofence">Error Happened, Can\'t Add Geofence</string>
     <string name="sign_in_with_email">Sign In With Email</string>
     <string name="sign_in_with_google_account">Sign In With Google Account</string>
+    <string name="location_permission_message">Location permission is required to allow add new reminder.</string>
 </resources>

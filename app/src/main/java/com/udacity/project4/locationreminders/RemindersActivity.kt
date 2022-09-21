@@ -26,28 +26,13 @@ class RemindersActivity : AppCompatActivity() {
         setContentView(R.layout.activity_reminders)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        return super.onCreateOptionsMenu(menu)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 (nav_host_fragment as NavHostFragment).navController.popBackStack()
                 return true
             }
-            R.id.logout -> {
-                AuthUI.getInstance().signOut(this)
-                redirectToAuthActivity()
-
-            }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun redirectToAuthActivity() {
-        this.finish()
-        val intent = Intent(this, AuthenticationActivity::class.java)
-        startActivity(intent)
     }
 }

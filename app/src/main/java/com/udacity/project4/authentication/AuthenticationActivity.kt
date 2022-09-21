@@ -17,6 +17,7 @@ import com.udacity.project4.R
 import com.udacity.project4.databinding.ActivityAuthenticationBinding
 import com.udacity.project4.locationreminders.ReminderDescriptionActivity
 import com.udacity.project4.locationreminders.RemindersActivity
+import com.udacity.project4.utils.SIGN_IN_RESULT_CODE
 
 
 /**
@@ -25,9 +26,6 @@ import com.udacity.project4.locationreminders.RemindersActivity
  */
 class AuthenticationActivity : AppCompatActivity() {
 
-    companion object {
-        const val SIGN_IN_RESULT_CODE = 1001
-    }
 
     private val viewModel by viewModels<AuthViewModel>()
     lateinit var binding: ActivityAuthenticationBinding
