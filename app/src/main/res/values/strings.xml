@@ -8,6 +8,7 @@
     <string name="reminder_location">Reminder Location</string>
     <string name="save">Save</string>
     <string name="reminder_saved">Reminder Saved !</string>
+    <string name="reminder_geo_saved">Reminder georeference added !</string>
     <string name="logout">Logout</string>
     <string name="welcome_to_the_location_reminder_app">Welcome to the location reminder app</string>
     <string name="login">Login</string>
@@ -45,4 +46,6 @@
     <string name="location_permission_message">Location permission is required to allow add new reminder.</string>
     <string name="enter_location_description">Please enter location description</string>
     <string name="enter_location_title">Please enter location title</string>
+    <string name="description">Description</string>
+    <string name="title">Title</string>
 </resources>

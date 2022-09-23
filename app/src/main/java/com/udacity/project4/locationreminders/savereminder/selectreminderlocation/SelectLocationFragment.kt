@@ -41,8 +41,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
     private lateinit var binding: FragmentSelectLocationBinding
     private lateinit var map: GoogleMap
     private var selectedLocationMarker: Marker? = null
-    private var selectedPoi : PointOfInterest? = null
-    private var selectedLatLng : LatLng? = null
+    private var selectedPoi: PointOfInterest? = null
+    private var selectedLatLng: LatLng? = null
     private lateinit var locationManager: LocationManager
     private val MIN_TIME: Long = 400
     private val MIN_DISTANCE = 1000f
@@ -68,13 +68,17 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
     }
 
     private fun onLocationSelected() {
-        if(selectedLatLng != null) {
-            _viewModel.reminderSelectedLocationStr.postValue("${selectedLatLng?.latitude},${selectedLatLng?.longitude}")
+        if (selectedLatLng != null) {
+            _viewModel.reminderSelectedLocationStr.postValue(
+                String.format(
+                    "Lat: %1$.5f, Long: %2$.5f",
+                    selectedLatLng?.latitude, selectedLatLng?.longitude
+                )
+            )
             _viewModel.longitude.postValue(selectedLatLng?.longitude)
             _viewModel.latitude.postValue(selectedLatLng?.latitude)
-        }
-        else{
-            _viewModel.reminderSelectedLocationStr.postValue("${selectedPoi?.latLng?.latitude},${selectedPoi?.latLng?.longitude}")
+        } else {
+            _viewModel.reminderSelectedLocationStr.postValue(selectedPoi?.name)
             _viewModel.longitude.postValue(selectedPoi?.latLng?.longitude)
             _viewModel.latitude.postValue(selectedPoi?.latLng?.latitude)
             _viewModel.selectedPOI.postValue(selectedPoi)
@@ -168,7 +172,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
         }
     }
 
-    private fun removeMarker(){
+    private fun removeMarker() {
         if (selectedLocationMarker != null)
             selectedLocationMarker?.remove()
     }
@@ -197,11 +201,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
 
     private fun navigateBackSaveReminder() {
         //use the navigationCommand live data to navigate between the fragments
-        _viewModel.navigationCommand.postValue(
-            NavigationCommand.To(
-                SelectLocationFragmentDirections.actionSelectLocationFragmentToSaveReminderFragment()
-            )
-        )
+        _viewModel.navigationCommand.postValue(NavigationCommand.Back)
     }
 
     override fun onRequestPermissionsResult(
