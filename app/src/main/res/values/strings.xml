@@ -43,4 +43,6 @@
     <string name="sign_in_with_email">Sign In With Email</string>
     <string name="sign_in_with_google_account">Sign In With Google Account</string>
     <string name="location_permission_message">Location permission is required to allow add new reminder.</string>
+    <string name="enter_location_description">Please enter location description</string>
+    <string name="enter_location_title">Please enter location title</string>
 </resources>

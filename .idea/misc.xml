@@ -9,8 +9,9 @@
         <entry key="..\:/My Work/Udicaty/nd940-android-kotlin-c4/app/src/main/res/layout/custom_auth_layout.xml" value="0.264" />
         <entry key="..\:/My Work/Udicaty/nd940-android-kotlin-c4/app/src/main/res/layout/fragment_reminders.xml" value="0.10989583333333333" />
         <entry key="..\:/My Work/Udicaty/nd940-android-kotlin-c4/app/src/main/res/layout/fragment_save_reminder.xml" value="0.10989583333333333" />
-        <entry key="..\:/My Work/Udicaty/nd940-android-kotlin-c4/app/src/main/res/layout/fragment_select_location.xml" value="0.10989583333333333" />
+        <entry key="..\:/My Work/Udicaty/nd940-android-kotlin-c4/app/src/main/res/layout/fragment_select_location.xml" value="0.264" />
         <entry key="..\:/My Work/Udicaty/nd940-android-kotlin-c4/app/src/main/res/menu/main_menu.xml" value="0.2" />
+        <entry key="..\:/My Work/Udicaty/nd940-android-kotlin-c4/app/src/main/res/menu/map_options.xml" value="0.1" />
       </map>
     </option>
   </component>

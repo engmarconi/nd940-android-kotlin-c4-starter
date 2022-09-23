@@ -21,9 +21,12 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
+import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
+import com.udacity.project4.locationreminders.reminderslist.ReminderListFragmentDirections
 import com.udacity.project4.locationreminders.reminderslist.isPermissionGranted
 import com.udacity.project4.locationreminders.reminderslist.requestLocationPermissions
+import com.udacity.project4.locationreminders.savereminder.SaveReminderFragmentDirections
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.REQUEST_LOCATION_PERMISSION
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
@@ -37,6 +40,9 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSelectLocationBinding
     private lateinit var map: GoogleMap
+    private var selectedLocationMarker: Marker? = null
+    private var selectedPoi : PointOfInterest? = null
+    private var selectedLatLng : LatLng? = null
     private lateinit var locationManager: LocationManager
     private val MIN_TIME: Long = 400
     private val MIN_DISTANCE = 1000f
@@ -45,7 +51,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_select_location, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_select_location, container, false)
         binding.viewModel = _viewModel
         binding.lifecycleOwner = this
         setHasOptionsMenu(true)
@@ -54,17 +61,25 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-//        TODO: zoom to the user location after taking his permission
-//        TODO: put a marker to location that the user selected
-//        TODO: call this function after the user confirms on the selected location
-        onLocationSelected()
+        binding.saveLocButton.setOnClickListener {
+            onLocationSelected()
+        }
         return binding.root
     }
 
     private fun onLocationSelected() {
-        //        TODO: When the user confirms on the selected location,
-        //         send back the selected location details to the view model
-        //         and navigate back to the previous fragment to save the reminder and add the geofence
+        if(selectedLatLng != null) {
+            _viewModel.reminderSelectedLocationStr.postValue("${selectedLatLng?.latitude},${selectedLatLng?.longitude}")
+            _viewModel.longitude.postValue(selectedLatLng?.longitude)
+            _viewModel.latitude.postValue(selectedLatLng?.latitude)
+        }
+        else{
+            _viewModel.reminderSelectedLocationStr.postValue("${selectedPoi?.latLng?.latitude},${selectedPoi?.latLng?.longitude}")
+            _viewModel.longitude.postValue(selectedPoi?.latLng?.longitude)
+            _viewModel.latitude.postValue(selectedPoi?.latLng?.latitude)
+            _viewModel.selectedPOI.postValue(selectedPoi)
+        }
+        navigateBackSaveReminder()
     }
 
 
@@ -95,10 +110,9 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        if(requireActivity().isPermissionGranted()) {
+        if (requireActivity().isPermissionGranted()) {
             enableLocationChange()
-        }
-        else{
+        } else {
             requireActivity().requestLocationPermissions()
         }
         setMapLongListener(map)
@@ -121,29 +135,42 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
 
     private fun setMapLongListener(map: GoogleMap) {
         map.setOnMapLongClickListener { latLng ->
+            selectedLatLng = latLng
+            selectedPoi = null
+            removeMarker()
             val snippet = String.format(
-                "Lat: %1$.5f, Long: %2$.5f",
+                "Selected location Lat: %1$.5f, Long: %2$.5f",
                 latLng.latitude, latLng.longitude
             )
-            map.addMarker(
+            selectedLocationMarker = map.addMarker(
                 MarkerOptions()
                     .position(latLng)
                     .title(getString(R.string.dropped_pin))
                     .snippet(snippet)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
             )
+            selectedLocationMarker?.showInfoWindow()
         }
+
     }
 
     private fun setPoiClick(map: GoogleMap) {
         map.setOnPoiClickListener { poi ->
-            val poiMarker = map.addMarker(
+            selectedLatLng = null
+            selectedPoi = poi
+            removeMarker()
+            selectedLocationMarker = map.addMarker(
                 MarkerOptions()
                     .position(poi.latLng)
                     .title(poi.name)
             )
-            poiMarker?.showInfoWindow()
+            selectedLocationMarker?.showInfoWindow()
         }
+    }
+
+    private fun removeMarker(){
+        if (selectedLocationMarker != null)
+            selectedLocationMarker?.remove()
     }
 
     private fun setMapStyle(map: GoogleMap) {
@@ -168,6 +195,15 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
         locationManager.removeUpdates(this)
     }
 
+    private fun navigateBackSaveReminder() {
+        //use the navigationCommand live data to navigate between the fragments
+        _viewModel.navigationCommand.postValue(
+            NavigationCommand.To(
+                SelectLocationFragmentDirections.actionSelectLocationFragmentToSaveReminderFragment()
+            )
+        )
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -177,9 +213,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.isNotEmpty() && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 enableLocationChange()
-            }
-            else{
-                Snackbar.make(binding.root, getString(R.string.location_permission_message), Snackbar.LENGTH_LONG)
+            } else {
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.location_permission_message),
+                    Snackbar.LENGTH_LONG
+                )
                     .show()
             }
         }
