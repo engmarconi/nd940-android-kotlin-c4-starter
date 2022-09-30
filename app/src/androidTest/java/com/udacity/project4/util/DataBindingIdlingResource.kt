@@ -21,8 +21,12 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.FragmentScenario
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.matcher.BoundedMatcher
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import java.util.UUID
 
 /**
@@ -35,9 +39,11 @@ import java.util.UUID
 class DataBindingIdlingResource : IdlingResource {
     // list of registered callbacks
     private val idlingCallbacks = mutableListOf<IdlingResource.ResourceCallback>()
+
     // give it a unique id to workaround an espresso bug where you cannot register/unregister
     // an idling resource w/ the same name.
     private val id = UUID.randomUUID().toString()
+
     // holds whether isIdle is called and the result was false. We track this to avoid calling
     // onTransitionToIdle callbacks if Espresso never thought we were idle in the first place.
     private var wasNotIdle = false
@@ -107,5 +113,22 @@ fun DataBindingIdlingResource.monitorActivity(
 fun DataBindingIdlingResource.monitorFragment(fragmentScenario: FragmentScenario<out Fragment>) {
     fragmentScenario.onFragment {
         this.activity = it.requireActivity()
+    }
+}
+
+fun atPositionOnView(
+    position: Int, itemMatcher: Matcher<View?>,
+    targetViewId: Int
+): Matcher<View?>? {
+    return object : BoundedMatcher<View?, RecyclerView>(RecyclerView::class.java) {
+        override fun describeTo(description: Description) {
+            description.appendText("has view id $itemMatcher at position $position")
+        }
+
+        override fun matchesSafely(recyclerView: RecyclerView): Boolean {
+            val viewHolder = recyclerView.findViewHolderForAdapterPosition(position)
+            val targetView: View = viewHolder!!.itemView.findViewById(targetViewId)
+            return itemMatcher.matches(targetView)
+        }
     }
 }

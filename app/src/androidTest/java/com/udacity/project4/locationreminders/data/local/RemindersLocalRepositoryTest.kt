@@ -25,6 +25,12 @@ import org.junit.runner.RunWith
 @MediumTest
 class RemindersLocalRepositoryTest {
 
-//    TODO: Add testing implementation to the RemindersLocalRepository.kt
+    /*private lateinit var reminderDao: RemindersDao
+    private lateinit var remindersRepository : RemindersLocalRepository
 
+    @Before
+    fun createRepository() {
+        reminderDao = RemindersDatabase.reminderDao()
+        remindersRepository = RemindersLocalRepository(reminderDao, Dispatchers.Unconfined)
+    }*/
 }
