@@ -11,6 +11,7 @@ import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
+import com.udacity.project4.locationreminders.data.dto.Result
 import com.udacity.project4.locationreminders.data.local.IRemindersRepository
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
@@ -40,10 +41,12 @@ class SaveReminderViewModel(val app: Application, private val repository: IRemin
     /**
      * Validate the entered data then saves the reminder data to the DataSource
      */
-    fun validateAndSaveReminder(reminderData: ReminderDataItem) {
+    fun validateAndSaveReminder(reminderData: ReminderDataItem) : Boolean {
         if (validateEnteredData(reminderData)) {
             saveReminder(reminderData)
+            return true
         }
+        return false
     }
 
     /**
@@ -52,7 +55,7 @@ class SaveReminderViewModel(val app: Application, private val repository: IRemin
     fun saveReminder(reminderData: ReminderDataItem) {
         showLoading.value = true
         viewModelScope.launch {
-            repository.saveReminder(
+            val result = repository.saveReminder(
                 ReminderDTO(
                     reminderData.title,
                     reminderData.description,
@@ -62,9 +65,15 @@ class SaveReminderViewModel(val app: Application, private val repository: IRemin
                     reminderData.id
                 )
             )
+            when (result) {
+                is Result.Success<*> -> {
+                    showToast.value = app.getString(R.string.reminder_saved)
+                    navigationCommand.value = NavigationCommand.Back
+                }
+                is Result.Error ->
+                    showSnackBar.value = result.message
+            }
             showLoading.value = false
-            showToast.value = app.getString(R.string.reminder_saved)
-            navigationCommand.value = NavigationCommand.Back
         }
     }
 

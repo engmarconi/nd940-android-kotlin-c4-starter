@@ -32,16 +32,22 @@ class RemindersLocalRepository(
         }
     }
 
+    override suspend fun saveReminder(reminder: ReminderDTO): Result<Boolean> = withContext(ioDispatcher) {
+        wrapEspressoIdlingResource {
+            return@withContext try {
+                remindersDao.saveReminder(reminder)
+                Result.Success(true)
+            } catch (ex: Exception) {
+                Result.Error(ex.localizedMessage)
+            }
+        }
+    }
+
     /**
      * Insert a reminder in the db.
      * @param reminder the reminder to be inserted
      */
-    override suspend fun saveReminder(reminder: ReminderDTO) =
-        wrapEspressoIdlingResource {
-            withContext(ioDispatcher) {
-                remindersDao.saveReminder(reminder)
-            }
-        }
+
 
     /**
      * Get a reminder by its id

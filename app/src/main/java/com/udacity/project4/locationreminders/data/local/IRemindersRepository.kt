@@ -14,7 +14,7 @@ interface IRemindersRepository {
      * Insert a reminder in the db.
      * @param reminder the reminder to be inserted
      */
-    suspend fun saveReminder(reminder: ReminderDTO)
+    suspend fun saveReminder(reminder: ReminderDTO): Result<Boolean>
 
     /**
      * Get a reminder by its id

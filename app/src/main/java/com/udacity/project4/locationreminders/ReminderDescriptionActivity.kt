@@ -15,8 +15,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.udacity.project4.R
 import com.udacity.project4.databinding.ActivityReminderDescriptionBinding
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
-import com.udacity.project4.locationreminders.reminderslist.isPermissionGranted
-import com.udacity.project4.locationreminders.reminderslist.requestLocationPermissions
 
 /**
  * Activity that displays the reminder details after the user clicks on the notification

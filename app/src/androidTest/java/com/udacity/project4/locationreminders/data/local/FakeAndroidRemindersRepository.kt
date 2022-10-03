@@ -7,7 +7,7 @@ import kotlinx.coroutines.runBlocking
 
 class FakeAndroidRemindersRepository : IRemindersRepository {
 
-    private var remindersServiceData : LinkedHashMap<String, ReminderDTO> = LinkedHashMap()
+    private var remindersServiceData: LinkedHashMap<String, ReminderDTO> = LinkedHashMap()
     private val observableReminder = MutableLiveData<Result<List<ReminderDTO>>>()
     private var shouldReturnError = false
 
@@ -22,8 +22,12 @@ class FakeAndroidRemindersRepository : IRemindersRepository {
         observableReminder.value = getReminders()
     }
 
-    override suspend fun saveReminder(reminder: ReminderDTO) {
+    override suspend fun saveReminder(reminder: ReminderDTO): Result<Boolean> {
+        if (shouldReturnError) {
+            return Result.Error("Test error message")
+        }
         remindersServiceData[reminder.id] = reminder
+        return Result.Success(true)
     }
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> {

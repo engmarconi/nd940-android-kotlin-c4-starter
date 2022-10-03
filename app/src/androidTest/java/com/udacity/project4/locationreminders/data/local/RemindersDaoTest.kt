@@ -110,4 +110,16 @@ class RemindersDaoTest {
         assertThat(dbReminders.size, `is`(2))
         assertThat(afterDeleteReminders.size, `is`(0))
     }
+
+    @Test
+    fun getReminder_NotFound() = runBlockingTest{
+        //Given remove all
+        database.reminderDao().deleteAllReminders()
+
+        //When save new reminder
+        val notFoundReminder = database.reminderDao().getReminderById("15220")
+
+        //Then check not found record is null
+        assertThat(notFoundReminder, nullValue())
+    }
 }
