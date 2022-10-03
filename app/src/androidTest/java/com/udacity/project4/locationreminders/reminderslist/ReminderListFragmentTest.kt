@@ -19,6 +19,7 @@ import com.udacity.project4.locationreminders.data.local.FakeAndroidRemindersRep
 import com.udacity.project4.locationreminders.data.local.IRemindersRepository
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
+import com.udacity.project4.util.ToastMatcher
 import com.udacity.project4.util.atPositionOnView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -138,5 +139,20 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         onView(withId(com.google.android.material.R.id.snackbar_text))
             .check(matches(withText("Test error message")))
         Thread.sleep(1000)
+    }
+
+    @Test
+    fun remindersList_TestToastMessage() = runBlockingTest {
+        // GIVEN - Add reminder
+        val reminder = ReminderDTO("Home","Sweet Home","32.0,33.0",32.0,33.0)
+        repository.saveReminder(reminder)
+
+        // WHEN - Open reminders list
+        launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+
+        //THEN - Check toast message
+        onView(withText("Reminders have been returned successfully"))
+            .inRoot(ToastMatcher())
+            .check(matches(isDisplayed()))
     }
 }

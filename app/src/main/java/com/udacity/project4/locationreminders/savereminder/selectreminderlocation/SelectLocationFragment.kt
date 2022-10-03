@@ -363,7 +363,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
     }
 
     override fun onProviderEnabled(provider: String) {
-        super.onProviderEnabled(provider)
     }
 
     override fun onProviderDisabled(provider: String) {

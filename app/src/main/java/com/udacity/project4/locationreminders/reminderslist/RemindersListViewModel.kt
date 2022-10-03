@@ -43,6 +43,7 @@ class RemindersListViewModel(
                         )
                     })
                     remindersList.value = dataList
+                    showToast.value = "Reminders have been returned successfully"
                 }
                 is Result.Error ->
                     showSnackBar.value = result.message
