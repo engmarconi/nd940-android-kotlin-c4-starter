@@ -2,6 +2,7 @@ package com.udacity.project4.locationreminders.savereminder
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.udacity.project4.locationreminders.MainCoroutineRule
 import com.udacity.project4.locationreminders.data.FakeDataSource
 import com.udacity.project4.locationreminders.data.FakeRemindersRepository
 import com.udacity.project4.locationreminders.getOrAwaitValue
@@ -12,6 +13,7 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -21,6 +23,11 @@ class SaveReminderViewModelTest {
 
     private lateinit var viewModel: SaveReminderViewModel
     private lateinit var repository: FakeRemindersRepository
+
+    // Set the main coroutines dispatcher for unit testing.
+    @ExperimentalCoroutinesApi
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
 
     @Before
     fun setupViewModel() = runBlockingTest {
@@ -58,26 +65,31 @@ class SaveReminderViewModelTest {
     }
 
     @Test
-    fun startLoading_checkLoading_SaveReminder_ThenCheckLoading() {
+    fun heckLoading_loadReminder() {
         // Make the repository return errors
         viewModel.showLoading.value = true
 
         // Given a fresh ViewModel
         val reminder = ReminderDataItem("Home","Sweet Home","32.0,33.0",32.0,33.0)
 
+        mainCoroutineRule.pauseDispatcher()
+
+        // Load the task in the viewmodel
+        viewModel.saveReminder(reminder)
+
+        // Then progress indicator is shown
         MatcherAssert.assertThat(
             viewModel.showLoading.getOrAwaitValue(),
             CoreMatchers.`is`(true)
         )
 
-        // When adding a new task
-        viewModel.saveReminder(reminder)
+        // Execute pending coroutines actions
+        mainCoroutineRule.resumeDispatcher()
 
-        //Then check loading
+        // Then progress indicator is hidden
         MatcherAssert.assertThat(
             viewModel.showLoading.getOrAwaitValue(),
             CoreMatchers.`is`(false)
         )
     }
-
 }

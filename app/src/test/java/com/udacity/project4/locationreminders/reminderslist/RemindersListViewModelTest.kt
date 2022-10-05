@@ -2,6 +2,7 @@ package com.udacity.project4.locationreminders.reminderslist
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.udacity.project4.locationreminders.MainCoroutineRule
 import com.udacity.project4.locationreminders.data.FakeRemindersRepository
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.local.IRemindersRepository
@@ -11,10 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.koin.core.context.GlobalContext.get
 import org.koin.core.context.startKoin
@@ -27,6 +25,12 @@ class RemindersListViewModelTest {
 
     private lateinit var viewModel: RemindersListViewModel
     private lateinit var repository: FakeRemindersRepository
+
+    // Set the main coroutines dispatcher for unit testing.
+    @ExperimentalCoroutinesApi
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
+
 
     @Before
     fun setupViewModel() = runBlockingTest {
@@ -69,16 +73,22 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun startLoading_checkLoading_loadReminder_ThenCheckLoading() {
-        // Make the repository return errors
-        viewModel.showLoading.value = true
+    fun heckLoading_loadReminder() {
+        mainCoroutineRule.pauseDispatcher()
 
+        // Load the task in the viewmodel
+        viewModel.loadReminders()
+
+        // Then progress indicator is shown
         MatcherAssert.assertThat(
             viewModel.showLoading.getOrAwaitValue(),
             CoreMatchers.`is`(true)
         )
-        viewModel.loadReminders()
 
+        // Execute pending coroutines actions
+        mainCoroutineRule.resumeDispatcher()
+
+        // Then progress indicator is hidden
         MatcherAssert.assertThat(
             viewModel.showLoading.getOrAwaitValue(),
             CoreMatchers.`is`(false)
