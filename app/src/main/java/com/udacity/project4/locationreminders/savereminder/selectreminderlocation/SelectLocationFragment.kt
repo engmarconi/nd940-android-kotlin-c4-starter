@@ -80,7 +80,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
                 requestLocationPermissions()
             }
         }
-
+        locationManager =
+            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return binding.root
     }
 
@@ -152,9 +153,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
 
     @SuppressLint("MissingPermission")
     private fun enableLocationChange() {
-        locationManager =
-            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.requestLocationUpdates(
+       locationManager.requestLocationUpdates(
             LocationManager.NETWORK_PROVIDER,
             MIN_TIME,
             MIN_DISTANCE,
@@ -259,6 +258,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
             }
         } else {
             map.isMyLocationEnabled = true
+            locationManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                MIN_TIME,
+                MIN_DISTANCE,
+                this
+            );
         }
     }
 

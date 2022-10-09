@@ -233,7 +233,7 @@ class SaveReminderFragment() : BaseFragment() {
             addOnSuccessListener {
                 // Geofences added.
                 Toast.makeText(
-                    requireActivity(), R.string.reminder_geo_saved,
+                    binding.root.context, R.string.reminder_geo_saved,
                     Toast.LENGTH_SHORT
                 )
                     .show()
@@ -242,7 +242,7 @@ class SaveReminderFragment() : BaseFragment() {
             addOnFailureListener {
                 // Failed to add geofences.
                 Toast.makeText(
-                    requireActivity(), R.string.geofences_not_added,
+                    binding.root.context, R.string.geofences_not_added,
                     Toast.LENGTH_SHORT
                 ).show()
                 if ((it.message != null)) {
