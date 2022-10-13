@@ -181,10 +181,10 @@ class SaveReminderFragment() : BaseFragment() {
                     startIntentSenderForResult(
                         exception.resolution.intentSender,
                         REQUEST_TURN_DEVICE_LOCATION_ON, null, 0, 0, 0, null)
-                    exception.startResolutionForResult(
-                        requireActivity(),
-                        REQUEST_TURN_DEVICE_LOCATION_ON
-                    )
+//                    exception.startResolutionForResult(
+//                        requireActivity(),
+//                        REQUEST_TURN_DEVICE_LOCATION_ON
+//                    )
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Log.d(TAG, "Error geting location settings resolution: " + sendEx.message)
                 }
