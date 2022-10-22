@@ -73,7 +73,7 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun heckLoading_loadReminder() {
+    fun checkLoading_loadReminder() {
         mainCoroutineRule.pauseDispatcher()
 
         // Load the task in the viewmodel

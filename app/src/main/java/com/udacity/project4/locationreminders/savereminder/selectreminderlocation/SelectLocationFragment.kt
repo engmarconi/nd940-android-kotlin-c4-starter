@@ -74,11 +74,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
         mapFragment.getMapAsync(this)
 
         binding.saveLocButton.setOnClickListener {
-            if (isPermissionGranted()) {
+            /*if (isPermissionGranted()) {
                 onLocationSelected()
             } else {
                 requestLocationPermissions()
-            }
+            }*/
+            onLocationSelected()
         }
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -238,25 +239,9 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
         Log.d(TAG, "onRequestPermissionResult")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (
-            grantResults.isEmpty() ||
-            grantResults[0] == PackageManager.PERMISSION_DENIED && requestCode == REQUEST_LOCATION_PERMISSION
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED && requestCode == REQUEST_LOCATION_PERMISSION
         ) {
-            // Permission denied.
-            binding.root.let {
-                Snackbar.make(
-                    binding.root,
-                    R.string.permission_denied_explanation, Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(R.string.settings) {
-                        // Displays App settings screen.
-                        startActivity(Intent().apply {
-                            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                            data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        })
-                    }.show()
-            }
-        } else {
             map.isMyLocationEnabled = true
             locationManager.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
@@ -309,10 +294,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
                     startIntentSenderForResult(
                         exception.resolution.intentSender,
                         REQUEST_TURN_DEVICE_LOCATION_ON, null, 0, 0, 0, null
-                    )
-                    exception.startResolutionForResult(
-                        requireActivity(),
-                        REQUEST_TURN_DEVICE_LOCATION_ON
                     )
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Log.d(

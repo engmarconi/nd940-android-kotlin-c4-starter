@@ -205,10 +205,6 @@ class SaveReminderFragment() : BaseFragment() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     @SuppressLint("MissingPermission")
     private fun addGeofence(reminder: ReminderDataItem) {
         // Build the Geofence Object
