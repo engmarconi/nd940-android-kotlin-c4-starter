@@ -44,6 +44,9 @@ class FakeRemindersRepository() : IRemindersRepository {
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
         return try {
+            if (shouldReturnError) {
+                return Result.Error("Test error: record not exist")
+            }
             fakeDataSource.getReminder(id)
         } catch (e: Exception) {
             Result.Error(e.message)
