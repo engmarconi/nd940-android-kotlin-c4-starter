@@ -3,6 +3,7 @@ package com.udacity.project4.locationreminders.savereminder
 import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.Activity.RESULT_OK
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentSender
@@ -202,6 +203,13 @@ class SaveReminderFragment() : BaseFragment() {
                 _viewModel.validateAndSaveReminder(dataItem)
                 addGeofence(dataItem)
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON && resultCode == RESULT_OK) {
+            _viewModel.validateAndSaveReminder(dataItem)
+            addGeofence(dataItem)
         }
     }
 
