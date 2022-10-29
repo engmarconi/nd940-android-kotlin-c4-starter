@@ -17,6 +17,7 @@ class RemindersListViewModel(
 ) : BaseViewModel(app) {
     // list that holds the reminder data to be displayed on the UI
     val remindersList = MutableLiveData<List<ReminderDataItem>>()
+    val reminderDetails = MutableLiveData<ReminderDataItem>()
 
     /**
      * Get all the reminders from the DataSource and add them to the remindersList to be shown on the UI,
@@ -51,6 +52,31 @@ class RemindersListViewModel(
 
             //check if no data has to be shown
             invalidateShowNoData()
+        }
+    }
+
+    fun getReminderById(id: String) {
+        showLoading.value = true
+        viewModelScope.launch {
+            //interacting with the dataSource has to be through a coroutine
+            val result = repository.getReminder(id)
+            showLoading.value = false
+            when (result) {
+                is Result.Success -> {
+                    val item = ReminderDataItem(
+                        result.data.title,
+                        result.data.description,
+                        result.data.location,
+                        result.data.latitude,
+                        result.data.longitude,
+                        result.data.id
+                    )
+                    reminderDetails.value = item
+                    showToast.value = "Reminder details has been returned successfully"
+                }
+                is Result.Error ->
+                    showSnackBar.value = result.message
+            }
         }
     }
 

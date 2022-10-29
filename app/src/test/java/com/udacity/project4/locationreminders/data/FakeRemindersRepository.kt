@@ -15,14 +15,11 @@ class FakeRemindersRepository() : IRemindersRepository {
     private var shouldReturnError = false
 
     override suspend fun getReminders(): Result<List<ReminderDTO>> {
-        try {
-            if (shouldReturnError) {
-                return Result.Error("Test error message")
-            }
-            val result = fakeDataSource.reminders
-            return Result.Success(result.toList())
+        return try {
+            fakeDataSource.setReturnError(shouldReturnError)
+            fakeDataSource.getReminders()
         } catch (e: Exception) {
-            return Result.Error(e.message)
+            Result.Error(e.message)
         }
     }
 
@@ -32,9 +29,7 @@ class FakeRemindersRepository() : IRemindersRepository {
 
     override suspend fun saveReminder(reminder: ReminderDTO): Result<Boolean> {
         return try {
-            if (shouldReturnError) {
-                return Result.Error("Test error message")
-            }
+            fakeDataSource.setReturnError(shouldReturnError)
             fakeDataSource.saveReminder(reminder)
             return Result.Success(true)
         } catch (e: Exception) {
@@ -44,9 +39,7 @@ class FakeRemindersRepository() : IRemindersRepository {
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
         return try {
-            if (shouldReturnError) {
-                return Result.Error("Test error: record not exist")
-            }
+            fakeDataSource.setReturnError(shouldReturnError)
             fakeDataSource.getReminder(id)
         } catch (e: Exception) {
             Result.Error(e.message)

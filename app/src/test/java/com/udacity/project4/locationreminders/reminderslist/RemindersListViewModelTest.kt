@@ -73,6 +73,19 @@ class RemindersListViewModelTest {
     }
 
     @Test
+    fun loadReminderByIdWhenAreUnavailable_callErrorToDisplay() {
+        // Make the repository return errors
+        repository.setReturnError(true)
+        viewModel.getReminderById("2121")
+
+        // Then an error message is shown
+        MatcherAssert.assertThat(
+            viewModel.showSnackBar.getOrAwaitValue(),
+            CoreMatchers.`is`("Test error message")
+        )
+    }
+
+    @Test
     fun checkLoading_loadReminder() {
         mainCoroutineRule.pauseDispatcher()
 
