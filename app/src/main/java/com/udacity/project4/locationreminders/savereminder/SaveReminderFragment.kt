@@ -166,7 +166,7 @@ class SaveReminderFragment() : BaseFragment() {
         )
     }
 
-    private fun checkDeviceLocationSettingsAndStartGeofence(resolve:Boolean = true) {
+    private fun checkDeviceLocationSettingsAndStartGeofence(resolve: Boolean = true) {
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_LOW_POWER
         }
@@ -181,7 +181,8 @@ class SaveReminderFragment() : BaseFragment() {
                 try {
                     startIntentSenderForResult(
                         exception.resolution.intentSender,
-                        REQUEST_TURN_DEVICE_LOCATION_ON, null, 0, 0, 0, null)
+                        REQUEST_TURN_DEVICE_LOCATION_ON, null, 0, 0, 0, null
+                    )
 //                    exception.startResolutionForResult(
 //                        requireActivity(),
 //                        REQUEST_TURN_DEVICE_LOCATION_ON
@@ -200,16 +201,16 @@ class SaveReminderFragment() : BaseFragment() {
         }
         locationSettingsResponseTask.addOnCompleteListener {
             if (it.isSuccessful) {
-                _viewModel.validateAndSaveReminder(dataItem)
-                addGeofence(dataItem)
+                if (_viewModel.validateAndSaveReminder(dataItem))
+                    addGeofence(dataItem)
             }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON && resultCode == RESULT_OK) {
-            _viewModel.validateAndSaveReminder(dataItem)
-            addGeofence(dataItem)
+            if (_viewModel.validateAndSaveReminder(dataItem))
+                addGeofence(dataItem)
         }
     }
 
