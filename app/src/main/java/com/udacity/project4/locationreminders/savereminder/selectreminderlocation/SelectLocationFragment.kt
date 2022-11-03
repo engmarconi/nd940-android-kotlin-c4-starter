@@ -250,6 +250,22 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
                 this
             );
         }
+        else{
+            binding.root.let {
+                Snackbar.make(
+                    binding.root,
+                    R.string.permission_denied_explanation_2, Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.settings) {
+                        // Displays App settings screen.
+                        startActivity(Intent().apply {
+                            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        })
+                    }.show()
+            }
+        }
     }
 
     private fun isPermissionGranted(): Boolean {
