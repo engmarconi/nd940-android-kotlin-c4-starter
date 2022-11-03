@@ -254,7 +254,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, LocationListe
             binding.root.let {
                 Snackbar.make(
                     binding.root,
-                    R.string.permission_denied_explanation_2, Snackbar.LENGTH_LONG
+                    R.string.permission_denied_explanation_2, Snackbar.LENGTH_INDEFINITE
                 )
                     .setAction(R.string.settings) {
                         // Displays App settings screen.
