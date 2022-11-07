@@ -30,6 +30,9 @@ class FakeRemindersRepository() : IRemindersRepository {
     override suspend fun saveReminder(reminder: ReminderDTO): Result<Boolean> {
         return try {
             fakeDataSource.setReturnError(shouldReturnError)
+            if (shouldReturnError) {
+                return Result.Error("Test error message")
+            }
             fakeDataSource.saveReminder(reminder)
             return Result.Success(true)
         } catch (e: Exception) {

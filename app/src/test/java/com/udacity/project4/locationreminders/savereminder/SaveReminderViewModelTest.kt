@@ -65,7 +65,7 @@ class SaveReminderViewModelTest {
     }
 
     @Test
-    fun heckLoading_loadReminder() {
+    fun checkLoading_loadReminder() {
         // Make the repository return errors
         viewModel.showLoading.value = true
 

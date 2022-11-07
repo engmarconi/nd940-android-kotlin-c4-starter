@@ -17,7 +17,7 @@ class FakeDataSource() : ReminderDataSource {
             reminders.let {
                 return Result.Success(ArrayList(it))
             }
-            return Result.Error("Reminders not found")
+            //return Result.Error("Reminders not found")
         } catch (e: Exception) {
             return Result.Error(e.message)
         }
